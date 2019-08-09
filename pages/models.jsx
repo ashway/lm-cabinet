@@ -1,10 +1,9 @@
-import Link from 'next/link';
 import "../scss/style.scss"
 import React from "react";
 import Header from '../components/header';
 import _ from 'lodash';
 import axios from "axios";
-const apiHost = 'http://api.lux-motor.ru';
+const apiHost = 'https://api.lux-motor.ru';
 
 let classSelect = [
     { alias: 'premium', name: 'Премиум-класс'},

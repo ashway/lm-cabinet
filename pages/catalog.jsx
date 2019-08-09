@@ -4,7 +4,7 @@ import Header from '../components/header';
 import _ from 'lodash';
 import Dropzone from 'react-dropzone';
 import axios from 'axios';
-const apiHost = 'http://api.lux-motor.ru';
+const apiHost = 'https://api.lux-motor.ru';
 
 const invertArray = (array) => {
     return _.fromPairs(_.map(array, (value, index) => [value, index+1]));
