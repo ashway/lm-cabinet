@@ -1,0 +1,85 @@
+@import "./core/flex";
+@import "./core/response";
+
+.w100 { flex-basis: 100%; flex-grow: 1; }
+
+$i: 0.75;
+@while $i > 0 {
+    .w#{floor($i*100)} { flex-basis:percentage($i); }
+    $i: $i - 0.25;
+}
+
+$i: 0.6666;
+@while $i > 0 {
+    .w#{floor($i*100)} { flex-basis:percentage($i); }
+    $i: $i - 0.3333;
+}
+
+//--------------------------------------------------------
+
+.flex-block {
+    @include flex(row, flex-start, flex-start);
+    margin-right: 0;
+
+    &.fb-from-wide {
+        display: block;
+        @include respond-to(wide) {
+            @include flex(row, flex-start, flex-start);
+        }
+    }
+
+    &>* {
+        &:last-child {
+            margin-right: 0;
+        }
+    }
+
+    &.center {
+        align-items: center;
+    }
+
+    &.full-width {
+        flex: 1;
+    }
+
+    &.space-between {
+        justify-content: space-between;
+        &>div { margin: 0; }
+    }
+
+    &.wrap {
+        flex-wrap: wrap;
+    }
+
+    &.stretch {
+        align-items: stretch;
+    }
+
+    &.fb-vtop {
+        align-items: flex-start;
+    }
+
+    &.fb-vcenter {
+        align-items: center;
+    }
+
+    &.fb-vbottom {
+        align-items: flex-end;
+    }
+
+    &.pos-left  {
+        justify-content: flex-start;
+    }
+
+    &.pos-right {
+        justify-content: flex-end;
+    }
+
+    &.pos-center {
+        justify-content: center;
+    }
+
+    &.space-around {
+        justify-content: space-around;
+    }
+}

@@ -1,0 +1,7 @@
+@mixin margin-between($size) {
+    &>* { margin-bottom: $size; &:last-child { margin-bottom: 0; } }
+}
+
+@mixin margin-between-horizontal($size) {
+    &>* { margin-right: $size; &:last-child { margin-right: 0; } }
+}

@@ -1,0 +1,113 @@
+.socialicon {
+    display: inline-block;
+    position: relative;
+    min-width: 36px;
+    min-height: 36px;
+    cursor: pointer;
+    transition: top 100ms ease-out;
+    top: 0;
+    &:hover {
+        top: -3px;
+    }
+
+    &:active {
+        top: 0;
+    }
+
+    &:before {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        font-family: 'SocialIcon';
+        font-size: 20px;
+        @include translate(-50%, -50%);
+    }
+
+    //-- Icons from fonts
+    &.fb:before, &.FACEBOOK:before {
+        margin-left: -1px;
+        content: "\e041";
+    }
+
+    &.vk:before, &.VKONTAKTE:before {
+        margin-left: -1px;
+        content: "\e01a";
+    }
+
+    &.ins:before, &.INSTAGRAM:before {
+        content: "\e057";
+    }
+
+    &.g:before, &.GOOGLE:before {
+        content: "\e042 ";
+    }
+
+    &.tw:before, &.TWITTER:before {
+        content: "\e040";
+    }
+
+    &.yt:before, &.YOUTUBE:before {
+        content: "\e051";
+    }
+
+    &.tg:before, &.TELEGRAM:before {
+        margin-left: -2px;
+        content: "\e06e";
+    }
+
+    &.fs:before, &.FOURSQUARE:before {
+        content: "\e044";
+    }
+
+    &.wa:before, &.WHATSAPP:before {
+        content: "\e01b";
+        margin-top: -1px;
+    }
+
+
+    &.round {
+        border-radius: 50%;
+        color: #ffffff !important;
+
+        &.vk, &.VKONTAKTE {
+            background-color: #4a74a5;
+        }
+
+        &.ins, &.INSTAGRAM {
+            background-color: #1d436a;
+        }
+
+        &.g, &.GOOGLE {
+            background-color: #ff1616;
+        }
+
+        &.tw, &.TWITTER {
+            background-color: #55c6f1;
+        }
+
+        &.fb, &.FACEBOOK {
+            background-color: #3a5795;
+        }
+
+        &.yt, &.YOUTUBE {
+            background-color: #cd201f;
+        }
+
+        &.tg, &.TELEGRAM {
+            background-color: #0088cc;
+        }
+
+        &.fs, &.FOURSQUARE {
+            background-color: #f94877;
+        }
+
+        &.wa, &.WHATSAPP {
+            background-color: #20B038;
+        }
+
+        &.grey {
+            background-color: #b9b9b9 !important;
+        }
+
+    }
+}

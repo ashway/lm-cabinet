@@ -1,0 +1,19 @@
+@mixin translateY($v) {
+  transform: translateY($v);
+}
+
+@mixin translateX($h) {
+  transform: translateX($h);
+}
+
+@mixin translate($h, $v) {
+    transform: translate($h, $v);
+}
+
+@mixin absoluteCover() {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+}

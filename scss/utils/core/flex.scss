@@ -1,0 +1,23 @@
+@mixin flex($direction: row, $justify: space-between, $align: center) {
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: $justify;
+    flex-direction: $direction;
+    align-items: $align;
+
+    &>* {
+        @if $direction == row {
+            margin-right: 10px;
+            &:last-child {
+                margin-right: 0;
+            }
+        }
+
+        @if $direction == column {
+            margin-bottom: 10px;
+            &:last-child {
+                margin-bottom: 0;
+            }
+        }
+    }
+}
