@@ -359,7 +359,7 @@ class CatalogPage extends React.Component {
                             <div className="file-list">
                                 {_.map(this.state.photos, (file, index) => (
                                     <div key={file} onClick={(e)=>{(this.state.orderMode)?this.setNextOrder(file):this.setCover(e, file)}}>
-                                        <div className={`${(this.state.orderMode)?`order-on ${(invertArray(this.state.orderedImages)[file])?'ordered':''}`:''}`} style={{backgroundImage: `url(${apiHost}/img/car/${this.state.currentCarAlias}/${file}.jpg)`}}>
+                                        <div className={`${(this.state.orderMode)?`order-on ${(invertArray(this.state.orderedImages)[file])?'ordered':''}`:''}`} style={{backgroundImage: `url(https://img.lux-motor.ru/car/${this.state.currentCarAlias}/${file}.jpg)`}}>
                                             {(this.state.cover==file)?<div className="cpl-active"/>:null}
                                             {(!this.state.orderMode)?<div className="cpl-remove" onClick={(e)=>this.removePhotoHandle(e, file)} />:null}
                                             <div className="cpl-orderNum">{(invertArray(this.state.orderedImages)[file])?invertArray(this.state.orderedImages)[file]:this.state.orderedImages.length+1}</div>
@@ -403,7 +403,7 @@ class CatalogPage extends React.Component {
 
                 {(this.state.catalogList)?<div className="car-list">
                     {_.map(this.state.catalogList, i=><div key={i.alias} onClick={()=>this.editCar(i)}>
-                        <div style={{backgroundImage: `url(${apiHost}/img/${(i.cover)?`car/${i.alias}/${i.cover}.jpg)`:'noimage.png'}`}}/>
+                        <div style={{backgroundImage: `url(https://img.lux-motor.ru/${(i.cover)?`car/${i.alias}/${i.cover}.jpg)`:'noimage.png'}`}}/>
                         <div className="actions"><div className={`${(i.active)?'active':'disabled'}`} onClick={(e)=>{e.stopPropagation(); this.toggleActive(i)}}/><div className="delete" onClick={(e)=>{ e.stopPropagation(); this.deleteCar(i.alias); }}>D</div></div>
                         <div>
                             <div>

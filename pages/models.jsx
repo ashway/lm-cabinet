@@ -20,7 +20,6 @@ let classSelectObj = _.keyBy(classSelect, 'alias');
 
 class ModelsPage extends React.Component {
 
-
     constructor (props) {
         super(props);
         this.state = {
