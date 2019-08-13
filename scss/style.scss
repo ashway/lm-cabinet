@@ -127,7 +127,7 @@ a { text-decoration: none; color: #303030; }
   &>div:first-child {
     position: relative;
     top: -100px;
-    background-color: #f5f6f7;
+    border: 2px solid #f5f6f7;
     border-radius: 50px;
     padding: 30px 50px;
     @include margin-between(10px);
@@ -450,8 +450,6 @@ a { text-decoration: none; color: #303030; }
 
 .list {
   @include margin-between(20px);
-
-
   &>div {
     &:first-child {
       font-size: 16px;
@@ -472,6 +470,11 @@ a { text-decoration: none; color: #303030; }
           background-color: #e0e0e0;
         }
         &.margin { margin-top: 15px }
+
+        &.blue {
+          background-color: #008fd2;
+          color: #ffffff;
+        }
 
         @include margin-between-horizontal(15px);
 
@@ -522,12 +525,21 @@ a { text-decoration: none; color: #303030; }
     }
   }
 
-  &.model {
+  &.services {
+    min-width: 260px;
+    &>div {
+      &:last-child {
+        & > div {
+          line-height: 32px;
+        }
+      }
+    }
+  }
 
+  &.model {
     .simple-form {
       width: 500px;
     }
-
     flex: 1;
     &>div {
       &:last-child {
@@ -541,6 +553,25 @@ a { text-decoration: none; color: #303030; }
     }
   }
 
+  &.blocks {
+    min-width: 0;
+      &>div:last-child {
+        display: flex;
+        flex-wrap: wrap;
+        margin: -5px;
+        @include margin-between(0);
+          &>div {
+            width: 33.333%;
+            border: 5px solid transparent;
+            box-sizing: border-box;
+            background-clip: padding-box;
+            padding: 10px 25px;
+            &>div:last-child {
+              text-align: left;
+            }
+          }
+      }
+  }
 
   .isActive {
       & > div {
@@ -552,6 +583,12 @@ a { text-decoration: none; color: #303030; }
         &.group {
           &:hover {
             background-color: #d5d6d7;
+          }
+        }
+
+        &.blue {
+          &:hover {
+            background-color: lighten(#008fd2, 5%);
           }
         }
 
