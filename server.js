@@ -63,7 +63,7 @@ fastify.register((fastify, opts, next) => {
           } catch(err) {
               needAuth = true;
           }
-          if(needAuth) {
+          if(needAuth && false) {
               reply.redirect('/');
           } else {
               return app.handleRequest(req.req, reply.res).then(() => {

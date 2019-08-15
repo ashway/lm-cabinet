@@ -2,7 +2,6 @@ import "../scss/style.scss"
 import React from "react";
 import axios from "axios";
 import Cookie from 'js-cookie';
-
 const apiHost = 'https://api.lux-motor.ru';
 
 class IndexPage extends React.Component {
