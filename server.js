@@ -20,63 +20,96 @@ fastify.register(require('fastify-cors'), {
   methods: "GET,HEAD,PUT,PATCH,POST,DELETE"
 });
 
+const validate = async (req) => {
+    let authToken = req.cookies.authToken;
+    let needAuth = false;
+    if(!authToken) needAuth = true;
+    let axios = axiosInstance(authToken);
+    try {
+        let res = await axios.get(`${apiHost}/auth/validate`);
+        if(res.data.status && res.data.status!='valid') needAuth = true;
+    } catch(err) {
+        needAuth = true;
+    }
+    return needAuth;
+}
+
 fastify.register((fastify, opts, next) => {
   const app = Next({ dev });
   app
     .prepare()
     .then(() => {
-      if (dev) {
-        fastify.get('/_next/*', (req, reply) => {
-          return app.handleRequest(req.req, reply.res).then(() => {
-            reply.sent = true
-          })
-        })
-      }
+        if (dev) {
+            fastify.get('/_next/*', (req, reply) => {
+              return app.handleRequest(req.req, reply.res).then(() => {
+                reply.sent = true
+              })
+            })
+        }
 
-      fastify.get('/', async(req, reply) => {
-          let authToken = req.cookies.authToken;
-          let needRedirect = false;
-          if(authToken) {
-              let axios = axiosInstance(authToken);
-              try {
-                  let res = await axios.get(`${apiHost}/auth/validate`);
-                  if(res.data.status && res.data.status=='valid') needRedirect = true;
-              } catch(err) {}
-          }
-          if(needRedirect) {
+        fastify.get('/', async(req, reply) => {
+            let authToken = req.cookies.authToken;
+            let needRedirect = false;
+            if(authToken) {
+                let axios = axiosInstance(authToken);
+                try {
+                    let res = await axios.get(`${apiHost}/auth/validate`);
+                    if(res.data.status && res.data.status=='valid') needRedirect = true;
+                } catch(err) {}
+            }
+            if(needRedirect) {
               reply.redirect('/catalog');
-          } else {
+            } else {
               return app.handleRequest(req.req, reply.res).then(() => {
                   reply.sent = true;
               })
-          }
-      });
+            }
+        });
 
-      fastify.get('/*', async (req, reply) => {
-          let authToken = req.cookies.authToken;
-          let needAuth = false;
-          if(!authToken) needAuth = true;
-          let axios = axiosInstance(authToken);
-          try {
-              let res = await axios.get(`${apiHost}/auth/validate`);
-              if(res.data.status && res.data.status!='valid') needAuth = true;
-          } catch(err) {
-              needAuth = true;
-          }
-          if(needAuth && false) {
-              reply.redirect('/');
-          } else {
-              return app.handleRequest(req.req, reply.res).then(() => {
-                  reply.sent = true;
-              })
-          }
-      });
+        fastify.get('/catalog/*', async (req, reply) => {
+            let needAuth = await validate(req);
+            if(needAuth) {
+                reply.redirect('/');
+            } else {
+                return app.handleRequest(req.req, reply.res).then(() => {
+                    reply.sent = true;
+                })
+            }
+        });
 
-      fastify.setNotFoundHandler((request, reply) => {
+        fastify.get('/models/*', async (req, reply) => {
+            let needAuth = await validate(req);
+            if(needAuth) {
+                reply.redirect('/');
+            } else {
+                return app.handleRequest(req.req, reply.res).then(() => {
+                    reply.sent = true;
+                })
+            }
+        });
+
+        fastify.get('/services/*', async (req, reply) => {
+            let needAuth = await validate(req);
+            if(needAuth) {
+                reply.redirect('/');
+            } else {
+                return app.handleRequest(req.req, reply.res).then(() => {
+                    reply.sent = true;
+                })
+            }
+        });
+
+        fastify.get('/*', (req, reply) => {
+          return app.handleRequest(req.req, reply.res).then(() => {
+              reply.sent = true;
+          })
+        });
+
+        fastify.setNotFoundHandler((request, reply) => {
           return app.render404(request.req, reply.res).then(() => {
             reply.sent = true;
           })
-      });
+        });
 
       next()
     })
