@@ -6,11 +6,14 @@ const Next = require('next');
 const _ = require('lodash');
 const pump = require('pump');
 const uuid = require('uuid/v1');
+const axiosInstance  = require('./axiosInstance');
 
 fastify.register(require('fastify-multipart'));
+fastify.register(require('fastify-cookie'));
 
 const port = parseInt(process.env.PORT, 10) || 3000;
 const dev = process.env.NODE_ENV !== 'production';
+const apiHost = 'https://api.lux-motor.ru';
 
 fastify.register(require('fastify-cors'), {
   origin: '*',
@@ -30,40 +33,49 @@ fastify.register((fastify, opts, next) => {
         })
       }
 
-      fastify.get('/dashboard/*', (req, reply) => {
-      return app.render(req.req, reply.res, '/dashboard', req.query).then(() => {
-        reply.sent = true;
-      })
+      fastify.get('/', async(req, reply) => {
+          let authToken = req.cookies.authToken;
+          let needRedirect = false;
+          if(authToken) {
+              let axios = axiosInstance(authToken);
+              try {
+                  let res = await axios.get(`${apiHost}/auth/validate`);
+                  if(res.data.status && res.data.status=='valid') needRedirect = true;
+              } catch(err) {}
+          }
+          if(needRedirect) {
+              reply.redirect('/catalog');
+          } else {
+              return app.handleRequest(req.req, reply.res).then(() => {
+                  reply.sent = true;
+              })
+          }
       });
 
-        fastify.get('/orders/*', (req, reply) => {
-            return app.render(req.req, reply.res, '/orders', req.query).then(() => {
-                reply.sent = true;
-            })
-        });
-
-        fastify.get('/cars/*', (req, reply) => {
-            return app.render(req.req, reply.res, '/cars', req.query).then(() => {
-                reply.sent = true;
-            })
-        });
-
-        fastify.get('/drivers/*', (req, reply) => {
-            return app.render(req.req, reply.res, '/drivers', req.query).then(() => {
-                reply.sent = true;
-            })
-        });
-
-      fastify.get('/*', (req, reply) => {
-      return app.handleRequest(req.req, reply.res).then(() => {
-        reply.sent = true;
-      })
+      fastify.get('/*', async (req, reply) => {
+          let authToken = req.cookies.authToken;
+          let needAuth = false;
+          if(!authToken) needAuth = true;
+          let axios = axiosInstance(authToken);
+          try {
+              let res = await axios.get(`${apiHost}/auth/validate`);
+              if(res.data.status && res.data.status!='valid') needAuth = true;
+          } catch(err) {
+              needAuth = true;
+          }
+          if(needAuth) {
+              reply.redirect('/');
+          } else {
+              return app.handleRequest(req.req, reply.res).then(() => {
+                  reply.sent = true;
+              })
+          }
       });
 
       fastify.setNotFoundHandler((request, reply) => {
-      return app.render404(request.req, reply.res).then(() => {
-        reply.sent = true;
-      })
+          return app.render404(request.req, reply.res).then(() => {
+            reply.sent = true;
+          })
       });
 
       next()

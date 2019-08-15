@@ -3,8 +3,10 @@ import React from "react";
 import Header from '../components/header';
 import _ from 'lodash';
 import Dropzone from 'react-dropzone';
-import axios from 'axios';
+import cookies from 'next-cookies';
+
 const apiHost = 'https://api.lux-motor.ru';
+const axiosInstance  = require('../axiosInstance');
 
 const invertArray = (array) => {
     return _.fromPairs(_.map(array, (value, index) => [value, index+1]));
@@ -44,10 +46,12 @@ class CatalogPage extends React.Component {
         };
     }
 
-    static async getInitialProps () {
+    static async getInitialProps (ctx) {
+        const { authToken } = cookies(ctx);
+        let axios = axiosInstance(authToken);
         let mark  = await axios.get(`${apiHost}/mark/list`);
         let model  = await axios.get(`${apiHost}/model/list`);
-        return { markList: mark.data, modelList: model.data };
+        return { authToken, markList: mark.data, modelList: model.data };
     }
 
     stateSelectField = (field, state)=> {
@@ -59,6 +63,7 @@ class CatalogPage extends React.Component {
     };
 
     requestCatalogList = async (alias) => {
+        let axios = axiosInstance(this.props.authToken);
        let res = await axios.get(`${apiHost}/car/list/${alias}`);
        return res.data;
     };
@@ -149,6 +154,7 @@ class CatalogPage extends React.Component {
     };
 
     deleteCar = async (alias) => {
+        let axios = axiosInstance(this.props.authToken);
         let catalogList = this.state.catalogList;
         let index = _.findIndex(catalogList, i=>i.alias==alias);
         if(index>=0) {
@@ -205,11 +211,13 @@ class CatalogPage extends React.Component {
     };
 
     getCarInfo = async (alias)=> {
+        let axios = axiosInstance(this.props.authToken);
         let carInfo = await axios.get(`${apiHost}/car/get/${alias}`);
         return carInfo.data;
     };
 
     formSend = async () => {
+        let axios = axiosInstance(this.props.authToken);
         let formData = new FormData();
         formData.append("model", this.state.modelSelect.value);
         formData.append("driver", this.state.driver || '');
@@ -245,6 +253,7 @@ class CatalogPage extends React.Component {
     };
 
     toggleActive = async (car)=> {
+        let axios = axiosInstance(this.props.authToken);
         let catalogList = this.state.catalogList;
         car.active = (car.active)?0:1;
         let index = _.findIndex(catalogList, i=>i.alias==car.alias);

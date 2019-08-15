@@ -2,8 +2,10 @@ import "../scss/style.scss"
 import React from "react";
 import Header from '../components/header';
 import _ from 'lodash';
-import axios from "axios";
+import cookies from 'next-cookies';
+
 const apiHost = 'https://api.lux-motor.ru';
+const axiosInstance  = require('../axiosInstance');
 
 let serviceList = [
         {alias: 'premium', name:'Автомобили премиум класса'},
@@ -26,14 +28,16 @@ class ModelsPage extends React.Component {
         };
     }
 
-    static async getInitialProps () {
+    static async getInitialProps (ctx) {
+        const { authToken } = cookies(ctx);
+        let axios = axiosInstance(authToken);
         let mark  = await axios.get(`${apiHost}/mark/list`);
         let model  = await axios.get(`${apiHost}/model/list`);
         let services  = await axios.get(`${apiHost}/services/list`);
         let servicesList = services.data;
 
         _.each(servicesList, s=>s.models = _.compact((s.models||'').split(',')));
-        return { markList: _.keyBy(mark.data, 'alias'), servicesList: _.keyBy(servicesList, 'alias'), modelList: _.remove(model.data, i=>!i.is_group) };
+        return { authToken, markList: _.keyBy(mark.data, 'alias'), servicesList: _.keyBy(servicesList, 'alias'), modelList: _.sortBy(_.remove(model.data, i=>!i.is_group), 'mark') };
     }
 
     componentDidMount() {
@@ -45,14 +49,15 @@ class ModelsPage extends React.Component {
     };
 
     setServiceCar = async (alias)=> {
-        let currentService = this.state.currentService;
+        let axios = axiosInstance(this.props.authToken);
+        let currentServiceAlias = this.state.currentService;
         let servicesList = this.state.servicesList;
-        if(servicesList[currentService]) {
-            let models = _.xor(servicesList[currentService].models, [alias]);
-            servicesList[currentService].models = models;
-            this.setState({servicesList});
-            await axios.post(`${apiHost}/services/save/${currentService}`, { models: models });
-        }
+        let currentService = servicesList[currentServiceAlias] || { alias: currentServiceAlias, models: []};
+        currentService.models = _.xor(currentService.models, [alias]);
+        servicesList[currentServiceAlias] = currentService;
+        this.setState({servicesList});
+        let action = _.includes(servicesList[currentServiceAlias].models, alias)?'add':'delete';
+        await axios.get(`${apiHost}/services/${action}/${currentServiceAlias}/${alias}`);
     };
 
     render() {
@@ -73,7 +78,7 @@ class ModelsPage extends React.Component {
                             <div className="list blocks">
                                 <div className="flex-block fb-vcenter"><div className="h1">{_.keyBy(serviceList, 'alias')[this.state.currentService].name}</div></div>
                                 <div className="isActive">
-                                    {_.map(this.props.modelList, i=><div className={(_.includes(this.state.servicesList[this.state.currentService].models, i.alias))?'blue':''} key={i.alias} onClick={()=>this.setServiceCar(i.alias)}>
+                                    {_.map(this.props.modelList, i=><div className={(_.includes((this.state.servicesList[this.state.currentService] || {}).models, i.alias))?'blue':''} key={i.alias} onClick={()=>this.setServiceCar(i.alias)}>
                                         <div>{(this.props.markList[i.mark]||{}).name}</div>
                                         <div className="bold">{i.name}</div>
                                     </div>)}

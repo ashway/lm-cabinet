@@ -2,8 +2,10 @@ import "../scss/style.scss"
 import React from "react";
 import Header from '../components/header';
 import _ from 'lodash';
-import axios from "axios";
+import cookies from 'next-cookies';
+
 const apiHost = 'https://api.lux-motor.ru';
+const axiosInstance  = require('../axiosInstance');
 
 let classSelect = [
     { alias: 'premium', name: 'Премиум-класс'},
@@ -51,21 +53,25 @@ class ModelsPage extends React.Component {
         };
     }
 
+    static async getInitialProps (ctx) {
+        const { authToken } = cookies(ctx);
+        let axios = axiosInstance(authToken);
+        let mark  = await axios.get(`${apiHost}/mark/list`);
+        let model  = await axios.get(`${apiHost}/model/list`);
+        return { authToken, markList: mark.data, modelList: model.data };
+    }
+
     getMarkList = async ()=> {
+        let axios = axiosInstance(this.props.authToken);
         let mark  = await axios.get(`${apiHost}/mark/list`);
         return mark.data;
     };
 
     getModelList = async() => {
+        let axios = axiosInstance(this.props.authToken);
         let model  = await axios.get(`${apiHost}/model/list`);
         return model.data
     };
-
-    static async getInitialProps () {
-        let mark  = await axios.get(`${apiHost}/mark/list`);
-        let model  = await axios.get(`${apiHost}/model/list`);
-        return { markList: mark.data, modelList: model.data };
-    }
 
     stateSelectField = (field, state)=> {
         let selectField = this.state[field];
@@ -76,9 +82,6 @@ class ModelsPage extends React.Component {
     };
 
     selectFieldSetCurrent = (field, value)=> {
-
-        console.log(field, value);
-
         let selectField = this.state[field];
         selectField.value = value;
         selectField.state = false;
@@ -98,18 +101,21 @@ class ModelsPage extends React.Component {
     };
 
     deleteMark = async (alias) => {
+        let axios = axiosInstance(this.props.authToken);
         await axios.get(`${apiHost}/mark/delete/${alias}`);
         let markList = await this.getMarkList();
         this.setState({ carMark: markList });
     };
 
     deleteModel = async (alias) => {
+        let axios = axiosInstance(this.props.authToken);
         await axios.get(`${apiHost}/model/delete/${alias}`);
         let modelList = await this.getModelList();
         this.setState({ carModel: modelList });
     };
 
     addMark = async () => {
+        let axios = axiosInstance(this.props.authToken);
         await axios.post(`${apiHost}/mark/add`, { alias: this.state.markAlias, name: this.state.markName });
         let markList = await this.getMarkList();
         this.setState({ carMark: markList, markAlias: '', markName: '', showAddMarkForm: false });
@@ -142,6 +148,7 @@ class ModelsPage extends React.Component {
     };
 
     addModel = async () => {
+        let axios = axiosInstance(this.props.authToken);
         let newModel = {
             alias: this.state.isGroupCheckbox?this.state.classSelect.value:(this.state.modelAlias || ''),
             name: this.state.modelName || '',
