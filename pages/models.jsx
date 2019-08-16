@@ -46,6 +46,7 @@ class ModelsPage extends React.Component {
             price: '',
             outcity_price: '',
             mintime: '',
+            seats: '',
             modelAlias: '',
             modelName: '',
             carMark: props.markList,
@@ -58,19 +59,24 @@ class ModelsPage extends React.Component {
         let axios = axiosInstance(authToken);
         let mark  = await axios.get(`${apiHost}/mark/list`);
         let model  = await axios.get(`${apiHost}/model/list`);
-        return { authToken, markList: mark.data, modelList: model.data };
+        let modelList =model.data;
+        _.each(modelList, m=>m.is_group=(m.is_group)?1:0);
+        modelList =  _.orderBy(modelList, ['is_group', 'mark'], ['asc', 'asc']);
+        return { authToken, markList: _.sortBy(mark.data, 'name'), modelList };
     }
 
     getMarkList = async ()=> {
         let axios = axiosInstance(this.props.authToken);
         let mark  = await axios.get(`${apiHost}/mark/list`);
-        return mark.data;
+        return _.sortBy(mark.data, 'name');
     };
 
     getModelList = async() => {
         let axios = axiosInstance(this.props.authToken);
         let model  = await axios.get(`${apiHost}/model/list`);
-        return model.data
+        let modelList =model.data;
+        _.each(modelList, m=>m.is_group=(m.is_group)?1:0);
+        return _.orderBy(modelList, ['is_group', 'mark'], ['asc', 'asc']);
     };
 
     stateSelectField = (field, state)=> {
@@ -129,6 +135,7 @@ class ModelsPage extends React.Component {
             price: '',
             outcity_price: '',
             mintime: '',
+            seats: '',
             markSelect: {
                 state: false,
                 value: ''
@@ -157,7 +164,8 @@ class ModelsPage extends React.Component {
             price: this.state.price || '',
             outcity_price: this.state.outcity_price || '',
             is_group: (this.state.isGroupCheckbox)?1:0,
-            mintime: this.state.mintime || ''
+            mintime: this.state.mintime || '',
+            seats: this.state.seats || '',
         };
         if(this.state.currentEditModelAlias) {
             await axios.post(`${apiHost}/model/update/${this.state.currentEditModelAlias}`, newModel);
@@ -196,9 +204,10 @@ class ModelsPage extends React.Component {
                 state: false,
                 value: model.class
             },
-            price: model.price,
-            outcity_price: model.outcity_price,
-            mintime: model.mintime,
+            price: model.price || '',
+            outcity_price: model.outcity_price || '',
+            mintime: model.mintime || '',
+            seats: model.seats || '',
             showAddModelForm: true
         });
     };
@@ -219,7 +228,7 @@ class ModelsPage extends React.Component {
         let state = {};
         state[field] = !this.state[field];
         this.setState(state);
-    }
+    };
 
     render() {
 
@@ -300,6 +309,11 @@ class ModelsPage extends React.Component {
                             <div>
                                 <div>Минимальное время заказа</div>
                                 <div className="flex-block fb-vcenter"><span className="w100"><input className="text-field full" onChange={(e)=>this.handleFormField(e, 'mintime')} value={this.state.mintime}/></span><span className="nowrap"> час</span></div>
+                            </div>
+
+                            <div>
+                                <div>Кол-во мест</div>
+                                <div className="flex-block fb-vcenter"><span className="w100"><input className="text-field full" onChange={(e)=>this.handleFormField(e, 'seats')} value={this.state.seats}/></span></div>
                             </div>
 
                             <div className="flex-block pos-right">
