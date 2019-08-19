@@ -329,7 +329,7 @@ class ModelsPage extends React.Component {
                                     <div>{(classSelectObj[i.class]||{}).name}</div>
                                     {(i.is_group)?<div/>:null}
                                     <div>{`${i.price} руб`}</div>
-                                    <div>{`${i.outcity_price} руб/ч`}</div>
+                                    <div>{`${i.outcity_price} руб/км`}</div>
                                     <div>{`${i.mintime} час`}</div>
                                     <div><span className="delete icomoon" onClick={(e)=>{ e.stopPropagation(); this.deleteModel(i.alias)} }>&#xe9ac;</span></div>
                                 </div>

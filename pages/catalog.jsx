@@ -344,7 +344,7 @@ class CatalogPage extends React.Component {
                                 <div><input className="text-field full" onChange={(e)=>this.handleFormField(e, 'price')} placeholder="Базовая" value={this.state.price}/></div>
                             </div>
                             <div>
-                                <div>Цена, загород</div>
+                                <div>Цена за км, загород</div>
                                 <div><input className="text-field full" onChange={(e)=>this.handleFormField(e, 'outcity_price')} placeholder="Базовая" value={this.state.outcity_price}/></div>
                             </div>
                             <div>
@@ -422,7 +422,7 @@ class CatalogPage extends React.Component {
                                 </div>
                                 <div>
                                     <div>{i.price || modelListObj[i.model].price} руб.</div>
-                                    <div>{i.outcity_price || modelListObj[i.model].outcity_price} руб/ч</div>
+                                    <div>{i.outcity_price || modelListObj[i.model].outcity_price} руб/км</div>
                                     <div>{i.mintime || modelListObj[i.model].mintime} часа</div>
                                 </div>
                             </div>
