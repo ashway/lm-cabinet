@@ -27,6 +27,10 @@ $font-stack: -apple-system, BlinkMacSystemFont, Roboto, "Open Sans", "Helvetica 
   font-style: normal;
 }
 
+.icomoon {
+  font-family: 'icomoon';
+}
+
 body {
   font-family: $font-stack;
   padding: 0;
@@ -361,7 +365,9 @@ a { text-decoration: none; color: #303030; }
     line-height: 27px;
     border-radius: 50%;
     &:before {
-      content: 'X';
+      font-family: 'icomoon';
+      content: '\ea0f';
+      font-size: 13px;
 
     }
   }
@@ -554,7 +560,7 @@ a { text-decoration: none; color: #303030; }
           display: grid;
           grid-template-columns: auto 160px 90px 90px 60px 33px;
           grid-template-rows: auto;
-          line-height: 33px;
+          line-height: 31px;
         }
       }
     }
@@ -859,7 +865,7 @@ a { text-decoration: none; color: #303030; }
         width: 30px;
         height: 30px;
         border-radius: 50%;
-        &:before { font-family:"icomoon"; content: '\e902'; display: block; text-align: center; line-height: 30px; color: #505050; font-size: 14px; }
+        &:before { font-family:"icomoon"; content: '\ea0f'; display: block; text-align: center; line-height: 30px; color: #505050; font-size: 14px; }
         &:hover {
           top: 4px;
         }

@@ -356,13 +356,13 @@ class CatalogPage extends React.Component {
                             <div className="flex-block fb-vcenter space-between">
                                 <div className="h2 full">Фотографии автомобиля</div>
                                 {(!this.state.orderMode)?<div className="flex-block action-bar">
-                                    <div onClick={()=>this.setOrderMode(true)}>O</div>
+                                    <div className="icomoon" onClick={()=>this.setOrderMode(true)}>&#xea45;</div>
                                 </div>:null}
                                 {(this.state.orderMode)?<div className="flex-block action-bar">
                                     <div className="o" onClick={()=>this.moveOrderIndex()}>{this.state.orderedImages.length+1}</div>
-                                    <div className="reset" onClick={()=>this.resetOrderImage()}>R</div>
-                                    <div className={`ok ${(this.state.orderedImages.length!=this.state.photos.length)?'disabled':''}`} onClick={()=>this.saveImageOrder()}>S</div>
-                                    <div  onClick={()=>this.setOrderMode(false)} className="cancel">X</div>
+                                    <div className="icomoon reset" onClick={()=>this.resetOrderImage()}>&#xe965;</div>
+                                    <div className={`icomoon ok ${(this.state.orderedImages.length!=this.state.photos.length)?'disabled':''}`} onClick={()=>this.saveImageOrder()}>&#xea10;</div>
+                                    <div onClick={()=>this.setOrderMode(false)} className="icomoon cancel">&#xea0f;</div>
                                 </div>:null}
                             </div>
                             <div className="file-list">
@@ -413,7 +413,7 @@ class CatalogPage extends React.Component {
                 {(this.state.catalogList)?<div className="car-list">
                     {_.map(this.state.catalogList, i=><div key={i.alias} onClick={()=>this.editCar(i)}>
                         <div style={{backgroundImage: `url(https://img.lux-motor.ru/${(i.cover)?`car/${i.alias}/${i.cover}.jpg)`:'noimage.png'}`}}/>
-                        <div className="actions"><div className={`${(i.active)?'active':'disabled'}`} onClick={(e)=>{e.stopPropagation(); this.toggleActive(i)}}/><div className="delete" onClick={(e)=>{ e.stopPropagation(); this.deleteCar(i.alias); }}>D</div></div>
+                        <div className="actions"><div className={`${(i.active)?'active':'disabled'}`} onClick={(e)=>{e.stopPropagation(); this.toggleActive(i)}}/><div className="icomoon delete" onClick={(e)=>{ e.stopPropagation(); this.deleteCar(i.alias); }}>&#xe9ac;</div></div>
                         <div>
                             <div>
                                 <div>

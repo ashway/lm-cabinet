@@ -252,7 +252,7 @@ class ModelsPage extends React.Component {
                             </div>
                         </div>:null}
                         <div>
-                            {_.map(this.state.carMark, i=><div key={i.alias}><div>{i.name}</div><div>{(_.filter(this.state.carModel, b=>b.mark===i.alias).length>0)?null:<span className="delete" onClick={()=>this.deleteMark(i.alias)}>D</span>}<span className={`${(_.includes(this.state.selectedMark, i.alias))?'filtred':''}`} onClick={()=>this.toggleSelectedMark(i.alias)}>F</span></div></div>)}
+                            {_.map(this.state.carMark, i=><div key={i.alias}><div>{i.name}</div><div>{(_.filter(this.state.carModel, b=>b.mark===i.alias).length>0)?null:<span className="delete" onClick={()=>this.deleteMark(i.alias)}>D</span>}<span className={`icomoon ${(_.includes(this.state.selectedMark, i.alias))?'filtred':''}`} onClick={()=>this.toggleSelectedMark(i.alias)}>&#xea5b;</span></div></div>)}
                         </div>
                     </div>
 
@@ -331,7 +331,7 @@ class ModelsPage extends React.Component {
                                     <div>{`${i.price} руб`}</div>
                                     <div>{`${i.outcity_price} руб/ч`}</div>
                                     <div>{`${i.mintime} час`}</div>
-                                    <div><span className="delete" onClick={(e)=>{ e.stopPropagation(); this.deleteModel(i.alias)} }>D</span></div>
+                                    <div><span className="delete icomoon" onClick={(e)=>{ e.stopPropagation(); this.deleteModel(i.alias)} }>&#xe9ac;</span></div>
                                 </div>
                             })}
                         </div>
