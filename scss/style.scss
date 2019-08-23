@@ -124,6 +124,20 @@ a { text-decoration: none; color: #303030; }
   color: #CE0606;
 }
 
+.hide-mobile {
+  @include respond-to(mobile) {
+    display: none !important;
+  }
+}
+
+.show-mobile {
+  display: none !important;
+  @include respond-to(mobile) {
+    display: block !important;
+  }
+}
+
+
 .login-form {
   @include flex($justify: center, $align: center);
   height: 100vh;
@@ -176,7 +190,7 @@ a { text-decoration: none; color: #303030; }
   position: relative;
   top: 0;
   display: inline-block;
-  padding: 0 20px;
+  padding: 0 14px;
   border-radius: 19px;
   color: #ffffff !important;
   background-color: #008fd2;
@@ -259,9 +273,16 @@ a { text-decoration: none; color: #303030; }
         .field-block {
           @include margin-between(7px);
         }
+        @include respond-to(mobile) {
+            min-width: 0;
+        }
       }
     }
-
+    @include respond-to(mobile) {
+      display: block;
+      @include margin-between-horizontal(0);
+      @include margin-between(20px);
+    }
   }
 }
 
@@ -454,11 +475,25 @@ a { text-decoration: none; color: #303030; }
       pointer-events: none;
     }
   }
+
+  @include respond-to(mobile) {
+    @include margin-between-horizontal(0);
+    @include margin-between(5px);
+    &>a {
+      display: block;
+    }
+  }
 }
 
 .form {
   @include flex($justify: flex-start, $align: start);
   @include margin-between-horizontal(20px);
+
+  @include respond-to(mobile) {
+    display: block;
+    @include margin-between-horizontal(0);
+    @include margin-between(20px);
+  }
 }
 
 .list {
@@ -502,7 +537,7 @@ a { text-decoration: none; color: #303030; }
             text-align: right;
             width: auto;
             @include margin-between-horizontal(3px);
-            &>span {
+            &>div>span, &>span {
               background-color: #008fd2;
               color: #ffffff;
               cursor: pointer;
@@ -552,15 +587,28 @@ a { text-decoration: none; color: #303030; }
   &.model {
     .simple-form {
       width: 500px;
+      box-sizing: border-box;
+      @include respond-to(mobile) {
+        width: 100%;
+      }
     }
     flex: 1;
     &>div {
       &:last-child {
         &>div {
           display: grid;
-          grid-template-columns: auto 160px 90px 90px 60px 33px;
+          grid-template-columns: auto 160px 275px;
           grid-template-rows: auto;
           line-height: 31px;
+
+          @include respond-to(mobile) {
+            display: block;
+            @include margin-between(7px);
+            line-height: 1.2;
+            padding: 10px;
+            padding-bottom: 4px;
+            padding-right: 4px;
+          }
         }
       }
     }
@@ -581,6 +629,10 @@ a { text-decoration: none; color: #303030; }
             padding: 10px 25px;
             &>div:last-child {
               text-align: left;
+            }
+            @include respond-to(mobile) {
+              width: 50%;
+              padding: 10px;
             }
           }
       }
@@ -606,6 +658,15 @@ a { text-decoration: none; color: #303030; }
         }
 
       }
+  }
+}
+
+.model-nest-selector {
+  @include flex();
+  @include respond-to(mobile) {
+    display: block;
+    @include margin-between-horizontal(0);
+    @include margin-between(7px);
   }
 }
 
@@ -673,6 +734,10 @@ a { text-decoration: none; color: #303030; }
       }
 
     }
+    @include respond-to(mobile) {
+      width: 100%;
+    }
+
   }
 }
 
@@ -920,6 +985,24 @@ a { text-decoration: none; color: #303030; }
   }
 }
 
+.action-button {
+  background-color: #008fd2;
+  color: #ffffff;
+  height: 37px;
+  width: 37px;
+  line-height: 37px;
+  text-align: center;
+  border-radius: 50%;
+  cursor: pointer;
+
+  &.o { background-color: #ffffff; color: #303030; border: 2px solid #d0d0d0; height: 33px; width: 33px; line-height: 33px; }
+  &.ok { background-color: #9dca00; }
+  &.cancel { background-color: #f15500; }
+  &.reset { background-color: #e9d000; }
+  &.gray { background-color: #a0a0a0; }
+  &.disabled { background-color: #d0d0d0; pointer-events: none; }
+}
+
 .action-bar {
   @include margin-between-horizontal(7px);
   &>div {
@@ -932,7 +1015,7 @@ a { text-decoration: none; color: #303030; }
     border-radius: 50%;
     cursor: pointer;
 
-    &.o { background-color: #ffffff; color: #303030; border: 2px solid #d0d0d0; height: 33px; width: 33px; line-height: 33px; margin-right: 30px; }
+    &.o { background-color: #ffffff; color: #303030; border: 2px solid #d0d0d0; height: 33px; width: 33px; line-height: 33px; }
     &.ok { background-color: #9dca00; }
     &.cancel { background-color: #f15500; }
     &.reset { background-color: #e9d000; }

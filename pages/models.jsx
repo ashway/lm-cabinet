@@ -3,6 +3,8 @@ import React from "react";
 import Header from '../components/header';
 import _ from 'lodash';
 import cookies from 'next-cookies';
+import ScrollableAnchor from 'react-scrollable-anchor';
+import { goToAnchor, configureAnchors } from 'react-scrollable-anchor';
 
 const apiHost = 'https://api.lux-motor.ru';
 const axiosInstance  = require('../axiosInstance');
@@ -19,6 +21,7 @@ let classSelect = [
 ];
 
 let classSelectObj = _.keyBy(classSelect, 'alias');
+configureAnchors({offset: -20});
 
 class ModelsPage extends React.Component {
 
@@ -209,7 +212,8 @@ class ModelsPage extends React.Component {
             mintime: model.mintime || '',
             seats: model.seats || '',
             showAddModelForm: true
-        });
+        }, ()=>goToAnchor('modelForm', false));
+
     };
 
     closeForm = (form) => {
@@ -256,8 +260,11 @@ class ModelsPage extends React.Component {
                         </div>
                     </div>
 
+
                     <div className="list model">
-                        <div className="flex-block fb-vcenter"><div>Модель (Группа)</div><div className="button" onClick={()=>this.toggleShowForm('showAddModelForm')}>+</div></div>
+                        <ScrollableAnchor id={'modelForm'}>
+                        <div>
+                        <div className="flex-block fb-vcenter mb20"><div>Модель (Группа)</div><div className="button" onClick={()=>this.toggleShowForm('showAddModelForm')}>+</div></div>
 
                         {(this.state.showAddModelForm)?<div className="simple-form">
 
@@ -321,6 +328,8 @@ class ModelsPage extends React.Component {
                                 <div className="button gray" onClick={()=>this.closeForm('showAddModelForm')}>Закрыть</div>
                             </div>
                         </div>:null}
+                        </div>
+                        </ScrollableAnchor>
 
                         <div className="isActive">
                             {_.map((this.state.selectedMark.length>0)?_.filter(this.state.carModel, i=>_.includes(this.state.selectedMark, i.mark)):this.state.carModel, i=>{
@@ -328,10 +337,14 @@ class ModelsPage extends React.Component {
                                     {(!i.is_group)?<div>{`${(markSelectObj[i.mark]||{}).name} ${i.name}`}</div>:null}
                                     <div>{(classSelectObj[i.class]||{}).name}</div>
                                     {(i.is_group)?<div/>:null}
-                                    <div>{`${i.price} руб`}</div>
-                                    <div>{`${i.outcity_price} руб/км`}</div>
-                                    <div>{`${i.mintime} час`}</div>
-                                    <div><span className="delete icomoon" onClick={(e)=>{ e.stopPropagation(); this.deleteModel(i.alias)} }>&#xe9ac;</span></div>
+
+                                    <div className="flex-block space-between fb-vcenter">
+                                        <div>{`${i.price} руб`}</div>
+                                        <div>{`${i.outcity_price} руб/км`}</div>
+                                        <div>{`${i.mintime} час`}</div>
+                                        <div><span className="delete icomoon" onClick={(e)=>{ e.stopPropagation(); this.deleteModel(i.alias)} }>&#xe9ac;</span></div>
+                                    </div>
+
                                 </div>
                             })}
                         </div>

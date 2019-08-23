@@ -4,9 +4,12 @@ import Header from '../components/header';
 import _ from 'lodash';
 import Dropzone from 'react-dropzone';
 import cookies from 'next-cookies';
+import ScrollableAnchor from 'react-scrollable-anchor';
+import { goToAnchor, configureAnchors } from 'react-scrollable-anchor';
 
 const apiHost = 'https://api.lux-motor.ru';
 const axiosInstance  = require('../axiosInstance');
+configureAnchors({offset: -20});
 
 const invertArray = (array) => {
     return _.fromPairs(_.map(array, (value, index) => [value, index+1]));
@@ -192,7 +195,7 @@ class CatalogPage extends React.Component {
             loadingPercent: 0,
             formSending: false,
             showAddCarForm: true
-        });
+        }, ()=>goToAnchor('carForm', false));
     };
 
     setCover = (e, file) => {
@@ -307,7 +310,7 @@ class CatalogPage extends React.Component {
             <div className="content">
                 <Header page="catalog"/>
 
-                <div className="flex-block mb20">
+                <div className="model-nest-selector mb20">
 
                         <div className={`w100 form-select ${(this.state.markSelect.state)?'opened':''}`}>
                             <div onClick={()=>this.stateSelectField('markSelect', 'toggle')}>{(markListObj[this.state.markSelect.value]||{}).name || 'Выберите марку'}</div>
@@ -326,89 +329,93 @@ class CatalogPage extends React.Component {
 
                 </div>
 
-                {(this.state.modelSelect.value)?<div className="flex-block fb-vcenter pos-left mb20 mr20"><div className="h1">{currentModelName}</div><div className="button" onClick={()=>this.toggleShowForm('showAddCarForm')}>+</div></div>:null}
-
-                {(this.state.showAddCarForm)?<div className="add-car-form mb20">
+                <ScrollableAnchor id={'carForm'}>
                     <div>
-                        <div>
-                            <div>
-                                <div>ФИО водителя</div>
-                                <div><input className="text-field full" onChange={(e)=>this.handleFormField(e, 'driver')} value={this.state.driver}/></div>
-                            </div>
-                            <div>
-                                <div>Телефон водителя</div>
-                                <div><input className="text-field full" onChange={(e)=>this.handleFormField(e, 'phone')} value={this.state.phone}/></div>
-                            </div>
-                            <div>
-                                <div>Цена в час</div>
-                                <div><input className="text-field full" onChange={(e)=>this.handleFormField(e, 'price')} placeholder="Базовая" value={this.state.price}/></div>
-                            </div>
-                            <div>
-                                <div>Цена за км, загород</div>
-                                <div><input className="text-field full" onChange={(e)=>this.handleFormField(e, 'outcity_price')} placeholder="Базовая" value={this.state.outcity_price}/></div>
-                            </div>
-                            <div>
-                                <div>Минимальное время заказа</div>
-                                <div><input className="text-field full" onChange={(e)=>this.handleFormField(e, 'mintime')} placeholder="Базовая" value={this.state.mintime}/></div>
-                            </div>
-                        </div>
-                        <div>
-                            <div className="flex-block fb-vcenter space-between">
-                                <div className="h2 full">Фотографии автомобиля</div>
-                                {(!this.state.orderMode)?<div className="flex-block action-bar">
-                                    <div className="icomoon" onClick={()=>this.setOrderMode(true)}>&#xea45;</div>
-                                </div>:null}
-                                {(this.state.orderMode)?<div className="flex-block action-bar">
-                                    <div className="o" onClick={()=>this.moveOrderIndex()}>{this.state.orderedImages.length+1}</div>
-                                    <div className="icomoon reset" onClick={()=>this.resetOrderImage()}>&#xe965;</div>
-                                    <div className={`icomoon ok ${(this.state.orderedImages.length!=this.state.photos.length)?'disabled':''}`} onClick={()=>this.saveImageOrder()}>&#xea10;</div>
-                                    <div onClick={()=>this.setOrderMode(false)} className="icomoon cancel">&#xea0f;</div>
-                                </div>:null}
-                            </div>
-                            <div className="file-list">
-                                {_.map(this.state.photos, (file, index) => (
-                                    <div key={file} onClick={(e)=>{(this.state.orderMode)?this.setNextOrder(file):this.setCover(e, file)}}>
-                                        <div className={`${(this.state.orderMode)?`order-on ${(invertArray(this.state.orderedImages)[file])?'ordered':''}`:''}`} style={{backgroundImage: `url(https://img.lux-motor.ru/car/${this.state.currentCarAlias}/${file}.jpg)`}}>
-                                            {(this.state.cover==file)?<div className="cpl-active"/>:null}
-                                            {(!this.state.orderMode)?<div className="cpl-remove" onClick={(e)=>this.removePhotoHandle(e, file)} />:null}
-                                            <div className="cpl-orderNum">{(invertArray(this.state.orderedImages)[file])?invertArray(this.state.orderedImages)[file]:this.state.orderedImages.length+1}</div>
-                                        </div>
-                                    </div>
-                                ))}
-                            </div>
-                            <div className="container car-photos-loader">
-                                <Dropzone onDrop={this.onDropHandle}>
-                                    {({getRootProps, getInputProps}) => (
-                                        <div {...getRootProps()}>
-                                            <input {...getInputProps()} />
-                                            <p>Перетащите в эту область фотографии или кликните по этому полю, чтобы открыть окно выбора.</p>
-                                            {(this.state.files.length>0)?<div className="file-list">
-                                                {_.map(this.state.files, (file, index) => (
-                                                    <div key={file.name}  onClick={(e)=>this.setCover(e, file.name)}>
-                                                        <div style={{backgroundImage: `url(${file.preview})`}}>
-                                                            {(this.state.cover==file.name)?<div className="cpl-active"/>:null}
-                                                            <div className="cpl-remove" onClick={(e)=>this.removeFileHandle(e, index)} />
-                                                        </div>
-                                                    </div>
-                                                ))}
-                                            </div>:null}
-                                        </div>)}
-                                </Dropzone>
-                            </div>
-                        </div>
-                    </div>
-                    <div className="flex-block fb-vcenter pos-right mt20">
-                        <div className="button red" onClick={()=>this.clearAddCarForm(true)}>Очистить</div>
-                        {(this.state.loadingPercent==100)?<div className="small-font">Данные сохранены</div>:null}
-                        {(!this.state.formSending)?<div className={`button ${this.state.orderedImages.length>0?'gray disabled':''}`} onClick={()=>this.formSend()}>{(this.state.currentCarAlias)?'Сохранить':'Добавить'}</div>:
-                            <div className="loading-process">
+                    {(this.state.modelSelect.value)?<div className="flex-block fb-vcenter pos-left mb20 mr20"><div className="h1">{currentModelName}</div><div className="button" onClick={()=>this.toggleShowForm('showAddCarForm')}>+</div></div>:null}
 
+                    {(this.state.showAddCarForm)?<div className="add-car-form mb20">
+                        <div>
+                            <div>
+                                <div>
+                                    <div>ФИО водителя</div>
+                                    <div><input className="text-field full" onChange={(e)=>this.handleFormField(e, 'driver')} value={this.state.driver}/></div>
+                                </div>
+                                <div>
+                                    <div>Телефон водителя</div>
+                                    <div><input className="text-field full" onChange={(e)=>this.handleFormField(e, 'phone')} value={this.state.phone}/></div>
+                                </div>
+                                <div>
+                                    <div>Цена в час</div>
+                                    <div><input className="text-field full" onChange={(e)=>this.handleFormField(e, 'price')} placeholder="Базовая" value={this.state.price}/></div>
+                                </div>
+                                <div>
+                                    <div>Цена за км, загород</div>
+                                    <div><input className="text-field full" onChange={(e)=>this.handleFormField(e, 'outcity_price')} placeholder="Базовая" value={this.state.outcity_price}/></div>
+                                </div>
+                                <div>
+                                    <div>Минимальное время заказа</div>
+                                    <div><input className="text-field full" onChange={(e)=>this.handleFormField(e, 'mintime')} placeholder="Базовая" value={this.state.mintime}/></div>
+                                </div>
+                            </div>
+                            <div>
+                                <div className="flex-block fb-vcenter space-between">
+                                    <div className="h2 full">Фотографии автомобиля</div>
+                                    {(!this.state.orderMode)?<div className="flex-block action-bar">
+                                        <div className="icomoon" onClick={()=>this.setOrderMode(true)}>&#xea45;</div>
+                                    </div>:null}
+                                    {(this.state.orderMode)?<div className="flex-block action-bar">
+                                        <div className="o" onClick={()=>this.moveOrderIndex()}>{this.state.orderedImages.length+1}</div>
+                                        <div className="icomoon reset" onClick={()=>this.resetOrderImage()}>&#xe965;</div>
+                                        <div className={`icomoon ok ${(this.state.orderedImages.length!=this.state.photos.length)?'disabled':''}`} onClick={()=>this.saveImageOrder()}>&#xea10;</div>
+                                        <div onClick={()=>this.setOrderMode(false)} className="icomoon cancel">&#xea0f;</div>
+                                    </div>:null}
+                                </div>
+                                <div className="file-list">
+                                    {_.map(this.state.photos, (file, index) => (
+                                        <div key={file} onClick={(e)=>{(this.state.orderMode)?this.setNextOrder(file):this.setCover(e, file)}}>
+                                            <div className={`${(this.state.orderMode)?`order-on ${(invertArray(this.state.orderedImages)[file])?'ordered':''}`:''}`} style={{backgroundImage: `url(https://img.lux-motor.ru/car/${this.state.currentCarAlias}/${file}.jpg)`}}>
+                                                {(this.state.cover==file)?<div className="cpl-active"/>:null}
+                                                {(!this.state.orderMode)?<div className="cpl-remove" onClick={(e)=>this.removePhotoHandle(e, file)} />:null}
+                                                <div className="cpl-orderNum">{(invertArray(this.state.orderedImages)[file])?invertArray(this.state.orderedImages)[file]:this.state.orderedImages.length+1}</div>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                                <div className="container car-photos-loader">
+                                    <Dropzone onDrop={this.onDropHandle}>
+                                        {({getRootProps, getInputProps}) => (
+                                            <div {...getRootProps()}>
+                                                <input {...getInputProps()} />
+                                                <p>Перетащите в эту область фотографии или кликните по этому полю, чтобы открыть окно выбора.</p>
+                                                {(this.state.files.length>0)?<div className="file-list">
+                                                    {_.map(this.state.files, (file, index) => (
+                                                        <div key={file.name}  onClick={(e)=>this.setCover(e, file.name)}>
+                                                            <div style={{backgroundImage: `url(${file.preview})`}}>
+                                                                {(this.state.cover==file.name)?<div className="cpl-active"/>:null}
+                                                                <div className="cpl-remove" onClick={(e)=>this.removeFileHandle(e, index)} />
+                                                            </div>
+                                                        </div>
+                                                    ))}
+                                                </div>:null}
+                                            </div>)}
+                                    </Dropzone>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="flex-block fb-vcenter pos-right mt20">
+                            <div className="icomoon action-button cancel" onClick={()=>this.clearAddCarForm(true)}>&#xe965;</div>
+                            <div className="button gray hide-mobile" onClick={()=>this.closeCarForm()}>Закрыть</div>
+                            <div className="icomoon action-button gray show-mobile" onClick={()=>this.closeCarForm()}>&#xea0f;</div>
+                            {(this.state.loadingPercent==100)?<div className="small-font">Данные сохранены</div>:null}
+                            {(!this.state.formSending)?<div className={`button ${this.state.orderedImages.length>0?'gray disabled':''}`} onClick={()=>this.formSend()}>{(this.state.currentCarAlias)?'Сохранить':'Добавить'}</div>:
+                            <div className="loading-process">
                                 <div className="small-font">Загружаю фотографии и отправляю данные</div>
                                 <div><div style={{ width: `${this.state.loadingPercent}%`}}/></div>
                             </div>}
-                        <div className="button gray" onClick={()=>this.closeCarForm()}>Закрыть</div>
+                        </div>
+                    </div>:null}
                     </div>
-                </div>:null}
+                </ScrollableAnchor>
 
                 {(this.state.catalogList)?<div className="car-list">
                     {_.map(this.state.catalogList, i=><div key={i.alias} onClick={()=>this.editCar(i)}>

@@ -38,6 +38,7 @@
     "react-images-upload": "^1.2.7",
     "react-input-mask": "^2.0.4",
     "react-preload-image": "^1.0.4",
+    "react-scrollable-anchor": "^0.6.1",
     "react-swipe": "^6.0.4",
     "react-yandex-maps": "^3.0.2",
     "react-yandex-metrika": "^2.5.1",
