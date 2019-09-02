@@ -403,7 +403,7 @@ class CatalogPage extends React.Component {
                             </div>
                         </div>
                         <div className="flex-block fb-vcenter pos-right mt20">
-                            <div className="icomoon action-button cancel" onClick={()=>this.clearAddCarForm(true)}>&#xe965;</div>
+                            <div className="icomoon action-button cancel" onClick={()=>this.clearAddCarForm(true)}>&#xea72;</div>
                             <div className="button gray hide-mobile" onClick={()=>this.closeCarForm()}>Закрыть</div>
                             <div className="icomoon action-button gray show-mobile" onClick={()=>this.closeCarForm()}>&#xea0f;</div>
                             {(this.state.loadingPercent==100)?<div className="small-font">Данные сохранены</div>:null}
